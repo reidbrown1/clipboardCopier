@@ -118,7 +118,13 @@ function createWindow() {
       try {
         mainWindow.webContents.send('processing-status', 'Processing with Claude...');
         const claudeResponse = await callAnthropicAPI(clipboardText);
+        
+        // Copy Claude's response to clipboard
+        clipboard.writeText(claudeResponse);
+        
+        // Send to renderer
         mainWindow.webContents.send('claude-response', claudeResponse);
+        mainWindow.webContents.send('clipboard-status', 'Response copied to clipboard!');
       } catch (error) {
         console.error('Error calling Claude API:', error);
         mainWindow.webContents.send('claude-response', `Error: ${error.message || error}`);

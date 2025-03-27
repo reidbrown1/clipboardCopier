@@ -52,6 +52,10 @@
       color: #7f8c8d;
       margin: 5px 0;
     }
+    .success {
+      color: #27ae60;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -69,6 +73,7 @@
     <div id="claudeResponse" class="box claude-box">
       <em>Claude's response will appear here...</em>
     </div>
+    <div id="clipboardStatus" class="status success"></div>
     
     <div class="instructions">
       <p>This app processes your clipboard content with Anthropic's Claude AI when you use the shortcut.</p>
@@ -83,6 +88,7 @@
     const clipboardContentElement = document.getElementById('clipboardContent');
     const processingStatusElement = document.getElementById('processingStatus');
     const claudeResponseElement = document.getElementById('claudeResponse');
+    const clipboardStatusElement = document.getElementById('clipboardStatus');
     
     // Listen for clipboard content from main process
     ipcRenderer.on('clipboard-text', (event, text) => {
@@ -102,6 +108,16 @@
     ipcRenderer.on('claude-response', (event, response) => {
       processingStatusElement.textContent = '';
       claudeResponseElement.innerHTML = response;
+    });
+    
+    // Listen for clipboard status updates
+    ipcRenderer.on('clipboard-status', (event, status) => {
+      clipboardStatusElement.textContent = status;
+      
+      // Clear the status after 3 seconds
+      setTimeout(() => {
+        clipboardStatusElement.textContent = '';
+      }, 3000);
     });
   </script>
 </body>
