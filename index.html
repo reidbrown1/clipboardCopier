@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Clipboard Copier</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #2c3e50;
+      margin-top: 0;
+    }
+    .box {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      min-height: 100px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .claude-box {
+      background-color: #f0f7ff;
+      border-color: #b3d8ff;
+    }
+    .instructions {
+      margin-top: 20px;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+    h2 {
+      margin-top: 30px;
+      color: #3498db;
+      font-size: 18px;
+    }
+    .status {
+      font-style: italic;
+      color: #7f8c8d;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Clipboard Copier with Claude</h1>
+    <p>Press <strong>Command+Shift+D</strong> to process your clipboard content:</p>
+    
+    <h2>Clipboard Content</h2>
+    <div id="clipboardContent" class="box">
+      <em>Clipboard content will appear here...</em>
+    </div>
+    
+    <h2>Claude's Response</h2>
+    <div id="processingStatus" class="status"></div>
+    <div id="claudeResponse" class="box claude-box">
+      <em>Claude's response will appear here...</em>
+    </div>
+    
+    <div class="instructions">
+      <p>This app processes your clipboard content with Anthropic's Claude AI when you use the shortcut.</p>
+    </div>
+  </div>
+
+  <script>
+    // Require electron renderer process
+    const { ipcRenderer } = require('electron');
+    
+    // Get elements
+    const clipboardContentElement = document.getElementById('clipboardContent');
+    const processingStatusElement = document.getElementById('processingStatus');
+    const claudeResponseElement = document.getElementById('claudeResponse');
+    
+    // Listen for clipboard content from main process
+    ipcRenderer.on('clipboard-text', (event, text) => {
+      if (text) {
+        clipboardContentElement.innerHTML = text;
+      } else {
+        clipboardContentElement.innerHTML = '<em>Clipboard is empty or contains non-text content</em>';
+      }
+    });
+    
+    // Listen for processing status updates
+    ipcRenderer.on('processing-status', (event, status) => {
+      processingStatusElement.textContent = status;
+    });
+    
+    // Listen for Claude's response
+    ipcRenderer.on('claude-response', (event, response) => {
+      processingStatusElement.textContent = '';
+      claudeResponseElement.innerHTML = response;
+    });
+  </script>
+</body>
+</html> 
