@@ -40,7 +40,7 @@ async function callAnthropicAPI(clipboardText) {
     const data = JSON.stringify({
       model: ANTHROPIC_MODEL,
       messages: [
-        { role: "user", content: `I want you to answer the question of the following text: ${clipboardText}` }
+        { role: "user", content: `Answer this test question '${clipboardText}'. If multiple choice, select the letter of the correct answer first, then provide a brief justification. If short answer, give a precise, complete response in 1-3 sentences.` }
       ],
       max_tokens: 1024
     });
